@@ -8,3 +8,4 @@ Module.symvers
 *.mk
 *.o.d
 .tmp_versions
+*.mod.c

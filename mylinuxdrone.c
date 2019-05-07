@@ -106,6 +106,7 @@ struct mylinuxdrone_device *alloc_mylinuxdrone_device(const char* name, int id)
     }
 
     strcpy(mlddev->id.name, name);
+    dev_set_name(&mlddev->dev, name);
     mlddev->dev.id = id;
     dev_dbg(&mlddev->dev, "device [%s] allocated \n",
             mlddev->id.name);

@@ -38,6 +38,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x37a0cba, __VMLINUX_SYMBOL_STR(kfree) },
 	{ 0xf4e3c975, __VMLINUX_SYMBOL_STR(device_unregister) },
 	{ 0xb6883d59, __VMLINUX_SYMBOL_STR(platform_driver_unregister) },
+	{ 0x5be4cf28, __VMLINUX_SYMBOL_STR(dev_set_name) },
 	{ 0xe914e41e, __VMLINUX_SYMBOL_STR(strcpy) },
 };
 

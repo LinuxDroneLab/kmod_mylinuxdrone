@@ -34,7 +34,7 @@ static const struct of_device_id arm_mylinuxdrone_pru_control_matches[] = {
         { .compatible = "arm,mylinuxdrone_pru", .name = MLD_PRU_CNTRL_CHANNEL_NAME},
         {},
 };
-MODULE_DEVICE_TABLE(of, arm_mylinuxdrone_pru_control_matches);
+MODULE_DEVICE_TABLE(mylinuxdrone, arm_mylinuxdrone_pru_control_matches);
 
 static const struct mylinuxdrone_device_id arm_mylinuxdrone_pru_control_id[] = {
         { .name = MLD_PRU_CNTRL_CHANNEL_NAME },

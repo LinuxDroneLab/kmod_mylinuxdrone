@@ -34,5 +34,3 @@ __used
 __attribute__((section(".modinfo"))) =
 "depends=mylinuxdrone";
 
-MODULE_ALIAS("of:Nmld-pru-controlT*Carm,mylinuxdrone_pru");
-MODULE_ALIAS("of:Nmld-pru-controlT*Carm,mylinuxdrone_pruC*");
