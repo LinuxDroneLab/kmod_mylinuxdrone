@@ -81,10 +81,21 @@ int __register_mylinuxdrone_driver(struct mylinuxdrone_driver *mlddrv,
 }
 EXPORT_SYMBOL(__register_mylinuxdrone_driver);
 
+static int __mylinuxdrone_devices_unregister(struct device *dev, void *data)
+{
+    struct mylinuxdrone_driver *mlddrv = (struct mylinuxdrone_driver *)data;
+        if(mylinuxdrone_dev_match(dev, &mlddrv->driver)) {
+            device_unregister(dev);
+        }
+        return 0;
+}
+
 void unregister_mylinuxdrone_driver(struct mylinuxdrone_driver *mlddrv)
 {
     printk(KERN_INFO "unregister_mylinuxdrone_driver started with drv:[%s] ... \n",
            mlddrv->driver.name);
+
+    bus_for_each_dev(&mylinuxdrone_bus_type, NULL, mlddrv, __mylinuxdrone_devices_unregister);
     driver_unregister(&mlddrv->driver);
     printk(KERN_INFO "unregister_mylinuxdrone_driver drv:[%s] unregistered ... \n",
            mlddrv->driver.name);
