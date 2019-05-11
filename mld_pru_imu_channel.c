@@ -10,11 +10,19 @@
 #include <linux/slab.h>
 #include <linux/init.h>
 #include <linux/rpmsg.h>
+#include <linux/device.h>
 #include "mylinuxdrone.h"
 #include "mld_pru_cntrl_channel.h"
 
+
+MODULE_LICENSE("Dual BSD/GPL");
+MODULE_AUTHOR("Andrea Lambruschini <andrea.lambruschini@gmail.com>");
+
 #define MLD_PRU_IMU_CHANNEL_NAME "mld-pru-imu"
 
+/********************************************************************
+ **************** MLD_PRU_IMU_CHANNEL DRIVER SECTION ****************
+ ********************************************************************/
 static int mld_pru_imu_channel_probe(struct mylinuxdrone_device *mlddev) {
     printk(KERN_DEBUG "mld_pru_imu_channel_probe started...\n");
     // TODO: Aggiornare status: 'Waiting for connection ...'
@@ -275,7 +283,6 @@ static void __exit mld_pru_imu_channel_fini(void)
     printk(KERN_DEBUG "mld_pru_imu_channel_fini started ...\n");
     unregister_mylinuxdrone_driver(&mld_pru_imu_channel_driver.mlddrv);
     unregister_rpmsg_driver (&mld_pru_imu_channel_driver.rpdrv);
-
     printk(KERN_DEBUG "mld_pru_imu_channel_fini ...\n");
 }
 

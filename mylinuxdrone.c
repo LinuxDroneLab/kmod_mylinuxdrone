@@ -128,7 +128,8 @@ EXPORT_SYMBOL(alloc_mylinuxdrone_device);
 static inline int mylinuxdrone_id_match(struct mylinuxdrone_device* mldev,
                                         const char* id)
 {
-    return (strncmp(mldev->id.name, id, MYLINUXDRONE_NAME_SIZE) == 0);
+//    return (strncmp(mldev->id.name, id, MYLINUXDRONE_NAME_SIZE) == 0);
+    return (strcmp(mldev->id.name, id) == 0);
 }
 
 static int mylinuxdrone_dev_match(struct device *dev, struct device_driver *drv)
@@ -139,7 +140,7 @@ static int mylinuxdrone_dev_match(struct device *dev, struct device_driver *drv)
     printk(KERN_INFO "mylinuxdrone_dev_match started with dev:[%s], drv:[%s] ... \n",
            mlddev->id.name, drv->name);
 
-    for (i = 0; (mlddrv->id_table + i); i++)
+    for (i = 0; *((mlddrv->id_table + i)->name); i++)
     {
         if (mylinuxdrone_id_match(mlddev, mlddrv->id_table[i].name))
         {
