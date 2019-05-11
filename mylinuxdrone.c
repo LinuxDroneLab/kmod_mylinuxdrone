@@ -128,7 +128,6 @@ EXPORT_SYMBOL(alloc_mylinuxdrone_device);
 static inline int mylinuxdrone_id_match(struct mylinuxdrone_device* mldev,
                                         const char* id)
 {
-//    return (strncmp(mldev->id.name, id, MYLINUXDRONE_NAME_SIZE) == 0);
     return (strcmp(mldev->id.name, id) == 0);
 }
 
