@@ -11,12 +11,12 @@
 #include <linux/init.h>
 #include <linux/rpmsg.h>
 #include "mylinuxdrone.h"
-#include "mld_pru_cntrl_channel.h"
+#include "pru_mylinuxdrone.h"
 
 MODULE_LICENSE("Dual BSD/GPL");
 MODULE_AUTHOR("Andrea Lambruschini <andrea.lambruschini@gmail.com>");
 
-#define MLD_PRU_CNTRL_CHANNEL_NAME "mld-pru-control"
+#define MLD_PRU_CNTRL_CHANNEL_NAME "mld-control"
 static int mld_pru_cntrl_channel_probe(struct mylinuxdrone_device *mlddev) {
     printk(KERN_DEBUG "mld_pru_cntrl_channel_probe started...\n");
     // TODO: Aggiornare status: 'Waiting for connection ...'
@@ -73,6 +73,9 @@ static const struct device_type pru_channel_type = {
         .name           = "pru_channel",
 };
 
+/***********************************************************
+ * IMU ENABLE/DISABLE ATTRIBUTES
+ ***********************************************************/
 static int enable_imu(struct mylinuxdrone_device *cntrl) {
     struct rpmsg_device* rpdev;
     unsigned char startMessage[sizeof(PrbMessageType)];
@@ -84,7 +87,7 @@ static int enable_imu(struct mylinuxdrone_device *cntrl) {
 
     ret = rpmsg_send(rpdev->ept, (void *)startMessage, sizeof(PrbMessageType));
     if (ret) {
-        dev_err(&cntrl->dev, "Failed sending start mpu message to PRUs\n");
+        dev_err(&cntrl->dev, "Failed sending enable imu message to PRUs\n");
         // TODO: Inviare un allarme su iio status
      }
     printk(KERN_DEBUG "enable_imu: creation of pru_imu device requested.\n");
@@ -103,7 +106,7 @@ static int disable_imu(struct mylinuxdrone_device *cntrl) {
 
     ret = rpmsg_send(rpdev->ept, (void *)startMessage, sizeof(PrbMessageType));
     if (ret) {
-        dev_err(&cntrl->dev, "Failed sending start mpu message to PRUs\n");
+        dev_err(&cntrl->dev, "Failed sending disable imu message to PRUs\n");
         // TODO: Inviare un allarme su iio buffer
      }
     printk(KERN_DEBUG "disable_imu: remove of pru_imu device requested.\n");
@@ -135,8 +138,74 @@ static ssize_t imu_enable_store(struct device *dev,
 }
 static DEVICE_ATTR_WO(imu_enable);
 
+/***********************************************************
+ * RC ENABLE/DISABLE ATTRIBUTES
+ ***********************************************************/
+static int enable_rc(struct mylinuxdrone_device *cntrl) {
+    struct rpmsg_device* rpdev;
+    unsigned char startMessage[sizeof(PrbMessageType)];
+    int ret;
+    printk(KERN_DEBUG "enable_rc\n");
+    rpdev = dev_get_drvdata(&cntrl->dev);
+
+    ((PrbMessageType*)startMessage)->message_type = RC_CREATE_CHANNEL_MSG_TYPE;
+
+    ret = rpmsg_send(rpdev->ept, (void *)startMessage, sizeof(PrbMessageType));
+    if (ret) {
+        dev_err(&cntrl->dev, "Failed sending enable rc message to PRUs\n");
+        // TODO: Inviare un allarme su iio status
+     }
+    printk(KERN_DEBUG "enable_rc: creation of pru_rc device requested.\n");
+    // TODO: Aggiornare status: 'Waiting for RC connection'
+    return 0;
+}
+static int disable_rc(struct mylinuxdrone_device *cntrl) {
+    struct rpmsg_device* rpdev;
+    unsigned char startMessage[sizeof(PrbMessageType)];
+    int ret;
+    printk(KERN_DEBUG "disable_rc\n");
+
+    rpdev = dev_get_drvdata(&cntrl->dev);
+
+    ((PrbMessageType*)startMessage)->message_type = RC_DESTROY_CHANNEL_MSG_TYPE;
+
+    ret = rpmsg_send(rpdev->ept, (void *)startMessage, sizeof(PrbMessageType));
+    if (ret) {
+        dev_err(&cntrl->dev, "Failed sending disable rc message to PRUs\n");
+        // TODO: Inviare un allarme su iio buffer
+     }
+    printk(KERN_DEBUG "disable_rc: remove of pru_rc device requested.\n");
+    // TODO: Aggiornare status: 'Waiting for RC disconnection'
+
+    return 0;
+}
+
+static ssize_t rc_enable_store(struct device *dev,
+                            struct device_attribute *attr,
+                            const char *buf, size_t len)
+{
+        struct mylinuxdrone_device *ch = to_mylinuxdrone_device(dev);
+        unsigned int enable;
+        int ret;
+
+        ret = kstrtouint(buf, 0, &enable);
+        if (ret < 0)
+                return ret;
+        if (enable > 1)
+                return -EINVAL;
+
+        if(enable == 1) {
+            ret = enable_rc(ch);
+        } else {
+            ret = disable_rc(ch);
+        }
+        return ret ? : len;
+}
+static DEVICE_ATTR_WO(rc_enable);
+
 static struct attribute *pru_control_attrs[] = {
         &dev_attr_imu_enable.attr,
+        &dev_attr_rc_enable.attr,
         NULL,
 };
 ATTRIBUTE_GROUPS(pru_control);

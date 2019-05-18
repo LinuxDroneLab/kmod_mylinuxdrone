@@ -12,13 +12,13 @@
 #include <linux/rpmsg.h>
 #include <linux/device.h>
 #include "mylinuxdrone.h"
-#include "mld_pru_cntrl_channel.h"
+#include "pru_mylinuxdrone.h"
 
 
 MODULE_LICENSE("Dual BSD/GPL");
 MODULE_AUTHOR("Andrea Lambruschini <andrea.lambruschini@gmail.com>");
 
-#define MLD_PRU_IMU_CHANNEL_NAME "mld-pru-imu"
+#define MLD_PRU_IMU_CHANNEL_NAME "mld-imu"
 
 /********************************************************************
  **************** MLD_PRU_IMU_CHANNEL DRIVER SECTION ****************

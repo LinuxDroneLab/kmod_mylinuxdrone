@@ -12,13 +12,13 @@
 #include <linux/rpmsg.h>
 #include <linux/device.h>
 #include "mylinuxdrone.h"
-#include "mld_pru_cntrl_channel.h"
+#include "pru_mylinuxdrone.h"
 
 
 MODULE_LICENSE("Dual BSD/GPL");
 MODULE_AUTHOR("Andrea Lambruschini <andrea.lambruschini@gmail.com>");
 
-#define MLD_PRU_RC_CHANNEL_NAME "mld-pru-rc"
+#define MLD_PRU_RC_CHANNEL_NAME "mld-rc"
 
 /********************************************************************
  **************** MLD_PRU_RC_CHANNEL DRIVER SECTION ****************
@@ -88,7 +88,7 @@ static int rc_start(struct mylinuxdrone_device *cntrl) {
     printk(KERN_DEBUG "rc_start\n");
     rpdev = dev_get_drvdata(&cntrl->dev);
 
-    ((PrbMessageType*)startMessage)->message_type = MPU_ENABLE_MSG_TYPE;
+    ((PrbMessageType*)startMessage)->message_type = RC_ENABLE_MSG_TYPE;
 
     ret = rpmsg_send(rpdev->ept, (void *)startMessage, sizeof(PrbMessageType));
     if (ret) {
@@ -107,7 +107,7 @@ static int rc_stop(struct mylinuxdrone_device *cntrl) {
 
     rpdev = dev_get_drvdata(&cntrl->dev);
 
-    ((PrbMessageType*)startMessage)->message_type = MPU_DISABLE_MSG_TYPE;
+    ((PrbMessageType*)startMessage)->message_type = RC_DISABLE_MSG_TYPE;
 
     ret = rpmsg_send(rpdev->ept, (void *)startMessage, sizeof(PrbMessageType));
     if (ret) {
