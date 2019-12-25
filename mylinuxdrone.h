@@ -35,8 +35,6 @@ struct mylinuxdrone_driver {
     const struct mylinuxdrone_device_id *id_table;
     int (*probe)(struct mylinuxdrone_device *mlddev);
     void (*remove)(struct mylinuxdrone_device *mlddev);
-    int (*add_observer)(void (*obs)(struct mylinuxdrone_device *mlddev, void *data, u32 len));
-    void (*remove_observer)(void (*obs)(struct mylinuxdrone_device *mlddev, void *data, u32 len));
 };
 
 #define to_mylinuxdrone_driver(d) container_of(d, struct mylinuxdrone_driver, driver)
